@@ -2,13 +2,16 @@ import HW03_Vivian_Dbritto_dictionary as dict
 import HW03_Vivian_Dbritto_wordle as wordle
 
 
-def start_game():
+def start_game(game_count, won_count):
+    attempt = 0
+    game_count += 1
     # No of trys
     word_count = 6
     # hidden word for game
     word = dict.get_random_5_letter_word().upper()
     # list to store valid entered words
     word_list = []
+    print(word)
 
     # loop till trys are exhausted
     i = 1
@@ -38,6 +41,8 @@ def start_game():
         # compare input word with given word
         if check_word == word:
             print("\nWord match found !!!")
+            won_count += 1
+            attempt = i
             break
 
         # check if character at particular index matches for input word and hidden word.
@@ -49,14 +54,30 @@ def start_game():
         i += 1
     else:
         print("You have exhausted all your trys. Please play again.")
+        attempt = 0
+
+    print("\n******* Statistics *********\n")
+    print(f"Played: {game_count}\n")
+    print(f"Won%: {(won_count/game_count*100)}\n")
+    print("\n******* Guess Distribution *********\n")
+    print(f"Attempt 1: {1 if attempt == 1 else 0}\n")
+    print(f"Attempt 2: {1 if attempt == 2 else 0}\n")
+    print(f"Attempt 3: {1 if attempt == 3 else 0}\n")
+    print(f"Attempt 4: {1 if attempt == 4 else 0}\n")
+    print(f"Attempt 5: {1 if attempt == 5 else 0}\n")
+    print(f"Attempt 6: {1 if attempt == 6 else 0}\n")
+
+    return game_count, won_count
 
 
 def main():
-    start_game()
+    game_count = 0
+    won_count = 0
+    game_count, won_count = start_game(game_count, won_count)
     # Game continues till empty string entered
     ans = input()
     while ans != "":
-        start_game()
+        game_count, won_count = start_game(game_count, won_count)
         ans = input()
     else:
         exit()
