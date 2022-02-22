@@ -1,3 +1,5 @@
+import unittest
+
 
 def validate_word(EXPECTED_WORD, input_word):
     letter_counts: dict = {}
@@ -24,6 +26,33 @@ def validate_word(EXPECTED_WORD, input_word):
             if input_word[index] in letter_counts:
                 if letter_counts[input_word[index]] > 0:
                     letter_counts[input_word[index]] -= 1
-                    appraisal[index] = "'"
+                    appraisal[index] = "`"
 
-    print(''.join(appraisal))
+    return ''.join(appraisal)
+
+
+class WordleTest(unittest.TestCase):
+
+    def test_wordle_positive(self):
+        word = validate_word("AARON", "AAAAA")
+        self.assertEqual(word, '  """')
+
+    def test_wordle_negative(self):
+        word = validate_word("AARON", "AAAAA")
+        self.assertNotEqual(word, '   ""')
+
+    def test_wordle_match_positive(self):
+        word = validate_word("AARON", "AARON")
+        self.assertEqual(word, '     ')
+
+    def test_wordle_match_negative(self):
+        word = validate_word("AARON", "AARON")
+        self.assertNotEqual(word, '""   ')
+
+    def test_wordle_incorrect_positive(self):
+        word = validate_word("AARON", "RNAAA")
+        self.assertEqual(word, '````"')
+
+    def test_wordle_incorrect_negative(self):
+        word = validate_word("AARON", "RNAAA")
+        self.assertNotEqual(word, '"```"')

@@ -46,7 +46,7 @@ def start_game(game_count, won_count):
             break
 
         # check if character at particular index matches for input word and hidden word.
-        wordle.validate_word(word, check_word)
+        print(wordle.validate_word(word, check_word))
 
         # add input word to list
         word_list.append(check_word)
