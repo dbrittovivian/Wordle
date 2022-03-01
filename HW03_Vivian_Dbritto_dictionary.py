@@ -31,20 +31,23 @@ def get_random_5_letter_word(word_file):
 def get_all_5_letter_words():
     valid_words = []
 
-    with open("words.txt") as file:
-        for word in file:
-            if len(word.strip()) == 5:
-                valid_words.append(word)
+    try:
+        with open("words.txt") as file:
+            for word in file:
+                if len(word.strip()) == 5:
+                    valid_words.append(word.strip())
 
-    textfile = open("5_letter_words_file.txt", "w")
-    textfile.truncate()
+        textfile = open("5_letter_words_file.txt", "w")
+        textfile.truncate()
 
-    for element in valid_words:
-        textfile.write(element + "\n")
+        for element in valid_words:
+            textfile.write(element + "\n")
 
-    textfile.close()
+        textfile.close()
 
-    return valid_words
+        return valid_words
+    except FileNotFoundError:
+        print("No file found")
 
 
 class DictionaryTest(unittest.TestCase):

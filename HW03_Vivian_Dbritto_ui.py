@@ -19,48 +19,49 @@ def start_game(word, game_count, won_count, logger):
     # loop till trys are exhausted
     i = 1
     while (i <= word_count):
-        # input from user
-        check_word = input(
-            f'\nAttempt #{i}: Enter word of length {len(word)} to check\n')
-        logger.info(f'Attempt #{i}: {check_word}')
+        try:
+            # input from user
+            check_word = input(
+                f'\nAttempt #{i}: Enter word of length {len(word)} to check\n')
+            logger.info(f'Attempt #{i}: {check_word}')
 
-        # check length of inputted and hidden word
-        if (len(check_word) != len(word)):
-            print(f'Please enter a word of length {len(word)}')
-            logger.error(f'Please enter a word of length {len(word)}')
-            continue
+            # check length of inputted and hidden word
+            if (len(check_word) != len(word)):
+                logger.error(f'Please enter a word of length {len(word)}')
+                raise ValueError(f'Please enter a word of length {len(word)}')
 
-        # check word has only letters
-        if not check_word.isalpha():
-            print("Please enter word with only alphabets")
-            logger.error("Please enter word with only alphabets")
-            continue
+            # check word has only letters
+            if not check_word.isalpha():
+                logger.error("Please enter word with only alphabets")
+                raise ValueError("Please enter word with only alphabets")
 
-        # convert word to uppercase
-        check_word = check_word.upper()
+            # convert word to uppercase
+            check_word = check_word.upper()
 
-        # check word already inputted
-        if check_word in word_list:
-            print("Entered word already checked. Please try another word.")
-            logger.error(
-                "Entered word already checked. Please try another word.")
-            continue
+            # check word already inputted
+            if check_word in word_list:
+                logger.error(
+                    "Entered word already checked. Please try another word.")
+                raise ValueError(
+                    "Entered word already checked. Please try another word.")
 
-        # compare input word with given word
-        if check_word == word:
-            print("\nWord match found !!!")
-            logger.info("Word match found !!!")
-            won_count += 1
-            attempt = i
-            break
+            # compare input word with given word
+            if check_word == word:
+                print("\nWord match found !!!")
+                logger.info("Word match found !!!")
+                won_count += 1
+                attempt = i
+                break
 
-        # check if character at particular index matches for input word and hidden word.
-        print(wordle.validate_word(word, check_word))
+            # check if character at particular index matches for input word and hidden word.
+            print(wordle.validate_word(word, check_word))
 
-        # add input word to list
-        word_list.append(check_word)
-        # decrement try count
-        i += 1
+            # add input word to list
+            word_list.append(check_word)
+            # decrement try count
+            i += 1
+        except ValueError as v:
+            print(v)
     else:
         print("You have exhausted all your trys. Please play again.")
         attempt = 0
