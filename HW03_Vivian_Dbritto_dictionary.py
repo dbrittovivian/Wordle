@@ -28,11 +28,11 @@ def get_random_5_letter_word(word_file):
         return word
 
 
-def get_all_5_letter_words():
+def get_all_5_letter_words(word_file="words.txt"):
     valid_words = []
 
     try:
-        with open("words.txt") as file:
+        with open(word_file) as file:
             for word in file:
                 if len(word.strip()) == 5:
                     valid_words.append(word.strip())
@@ -48,6 +48,7 @@ def get_all_5_letter_words():
         return valid_words
     except FileNotFoundError:
         print("No file found")
+        raise
 
 
 class DictionaryTest(unittest.TestCase):
@@ -63,3 +64,21 @@ class DictionaryTest(unittest.TestCase):
     def test_dictionary_word_length_positive(self):
         word = get_random_5_letter_word("test_word_file.txt")
         self.assertEqual(len(word), 5)
+
+    def test_dictionary_get_all_5_letter_words_positive(self):
+        with self.assertRaises(FileNotFoundError):
+            get_all_5_letter_words("no_file.txt")
+
+    def test_dictionary_get_all_5_letter_words_negative(self):
+        with self.assertRaises(ValueError):
+            get_all_5_letter_words("no_file.txt")
+
+    def test_dictionary_word_list_positive(self):
+        list = ["aaron"]
+        words = get_all_5_letter_words("test_word_file.txt")
+        self.assertEqual(words, list)
+
+    def test_dictionary_word_list_negative(self):
+        list = ["aaron", "bruce"]
+        words = get_all_5_letter_words("test_word_file.txt")
+        self.assertEqual(words, list)
