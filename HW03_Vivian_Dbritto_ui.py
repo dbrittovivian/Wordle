@@ -102,7 +102,7 @@ def main():
     # Game continues till empty string entered
     ans = input()
     while ans != "":
-        if len(word_list == 0):
+        if len(word_list) == 0:
             word_list = dict.get_all_5_letter_words()
 
         word = random.choice(word_list)
