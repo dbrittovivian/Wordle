@@ -28,6 +28,25 @@ def get_random_5_letter_word(word_file):
         return word
 
 
+def get_all_5_letter_words():
+    valid_words = []
+
+    with open("words.txt") as file:
+        for word in file:
+            if len(word.strip()) == 5:
+                valid_words.append(word)
+
+    textfile = open("5_letter_words_file.txt", "w")
+    textfile.truncate()
+
+    for element in valid_words:
+        textfile.write(element + "\n")
+
+    textfile.close()
+
+    return valid_words
+
+
 class DictionaryTest(unittest.TestCase):
 
     def test_dictionary_word_positive(self):
