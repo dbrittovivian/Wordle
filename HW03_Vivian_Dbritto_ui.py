@@ -98,10 +98,13 @@ def main():
     word_list = dict.get_all_5_letter_words()
     word = random.choice(word_list)
     word_list.remove(word)
+    dict.get_letter_dictionary()
+    dict.get_words_probability()
     game_count, won_count = start_game(word, game_count, won_count, logger)
     # Game continues till empty string entered
     ans = input()
     while ans != "":
+
         if len(word_list) == 0:
             word_list = dict.get_all_5_letter_words()
 

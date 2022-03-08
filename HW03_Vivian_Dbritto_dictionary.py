@@ -1,4 +1,6 @@
+from asyncio.windows_events import NULL
 import random
+import string
 import unittest
 
 
@@ -49,6 +51,105 @@ def get_all_5_letter_words(word_file="words.txt"):
     except FileNotFoundError:
         print("No file found")
         raise
+
+
+def get_letter_dictionary(file="letterFrequency.csv"):
+    letter_dict = {}
+
+    [letter_dict.setdefault(x, [0, 0, 0, 0, 0])
+     for x in string.ascii_lowercase]
+
+    words = get_all_5_letter_words()
+
+    for word in words:
+        for i in range(len(word)):
+            letter = word[i]
+            list = letter_dict.get(letter)
+            list[i] += 1
+            letter_dict[letter] = list
+
+    letter_dict = get_letter_stats(letter_dict, len(words))
+
+    textfile = open(file, "w")
+    textfile.truncate()
+
+    for key in letter_dict:
+        count_list = letter_dict.get(key)
+        textfile.write(
+            f'{key}, {count_list[0]}, {count_list[1]}, {count_list[2]}, {count_list[3]}, {count_list[4]}\n')
+
+    textfile.close()
+
+    return letter_dict
+
+
+def get_letter_stats(letter_dict, words_count):
+
+    for key in letter_dict:
+        count_list = letter_dict.get(key)
+
+        for i in range(len(count_list)):
+            count = round(count_list[i] / words_count, 3)
+            count_list[i] = count
+
+        letter_dict[key] = count_list
+
+    return letter_dict
+
+
+def convert_to_tuples(dictionary={}):
+    for key in dictionary:
+        count_list = dictionary.get(key)
+        count_tuple = tuple(count_list)
+        dictionary[key] = count_tuple
+
+    return dictionary
+
+
+def get_dict_from_csv(csv_file="letterFrequency.csv"):
+    d = {}
+
+    try:
+        with open(csv_file) as f:
+            for line in f:
+                line = line.strip('\n')
+                (key, val1, val2, val3, val4, val5) = line.split(", ")
+                d[key] = (float(val1), float(val2), float(
+                    val3), float(val4), float(val5))
+
+        print(d)
+    except FileNotFoundError:
+        print("No file found")
+        raise
+
+    return d
+
+
+def get_words_probability(file="wordRank.csv"):
+    words = get_all_5_letter_words()
+    letter_dict = get_dict_from_csv()
+    word_prob = {}
+
+    for word in words:
+        prob = 1
+        for i in range(len(word)):
+            letter = word[i]
+            list = letter_dict.get(letter)
+            prob *= list[i]
+
+        word_prob.update({word: prob})
+
+    sorted_list = sorted(word_prob.items(), key=lambda x: x[1], reverse=1)
+
+    textfile = open(file, "w")
+    textfile.truncate()
+
+    i = 1
+    for element in sorted_list:
+        textfile.write(f'{i}, {element[0]}, {element[1]}\n')
+        i += 1
+
+    textfile.close
 
 
 class DictionaryTest(unittest.TestCase):
