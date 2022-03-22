@@ -1,133 +1,31 @@
-import logging
-import random
-import HW03_Vivian_Dbritto_dictionary as dict
-import HW03_Vivian_Dbritto_wordle as wordle
+class Ui:
+    inputList = []
 
+    def __init__(self):
+        self.inputList = []
 
-def start_game(word, game_count, won_count, logger):
-    attempt = 0
-    game_count += 1
-    # No of trys
-    word_count = 6
-    # hidden word for game
-    word = word.upper()
-    # list to store valid entered words
-    word_list = []
-    logger.info(f'Current word: {word}')
-    print(word)
+    def __str__(self) -> str:
+        return f"InputList:{str(self.inputList)}"
 
-    # loop till trys are exhausted
-    i = 1
-    while (i <= word_count):
-        try:
-            # input from user
-            check_word = input(
-                f'\nAttempt #{i}: Enter word of length {len(word)} to check\n')
-            logger.info(f'Attempt #{i}: {check_word}')
+    def quitfunction(self, a):
+        if(len(a) == 0):
+            return True
+        else:
+            return False
 
-            # check length of inputted and hidden word
-            if (len(check_word) != len(word)):
-                logger.error(f'Please enter a word of length {len(word)}')
-                raise ValueError(f'Please enter a word of length {len(word)}')
+    def userinput(self, k):
 
-            # check word has only letters
-            if not check_word.isalpha():
-                logger.error("Please enter word with only alphabets")
-                raise ValueError("Please enter word with only alphabets")
+        print(f"Attempt #{k}:")
+        print("Any 5 letter word")
+        word = input()
+        word = word.upper()
+        if(self.quitfunction(word)):
+            quit()
 
-            # convert word to uppercase
-            check_word = check_word.upper()
-
-            # check word already inputted
-            if check_word in word_list:
-                logger.error(
-                    "Entered word already checked. Please try another word.")
-                raise ValueError(
-                    "Entered word already checked. Please try another word.")
-
-            # compare input word with given word
-            if check_word == word:
-                print("\nWord match found !!!")
-                logger.info("Word match found !!!")
-                won_count += 1
-                attempt = i
-                break
-
-            # check if character at particular index matches for input word and hidden word.
-            print(wordle.validate_word(word, check_word))
-
-            # add input word to list
-            word_list.append(check_word)
-            # decrement try count
-            i += 1
-        except ValueError as v:
-            print(v)
-    else:
-        print("You have exhausted all your trys. Please play again.")
-        attempt = 0
-
-    print("\n******* Statistics *********\n")
-    print(f"Played: {game_count}\n")
-    print(f"Won%: {(won_count/game_count*100)}\n")
-    print("\n******* Guess Distribution *********\n")
-    print(f"Attempt 1: {1 if attempt == 1 else 0}\n")
-    print(f"Attempt 2: {1 if attempt == 2 else 0}\n")
-    print(f"Attempt 3: {1 if attempt == 3 else 0}\n")
-    print(f"Attempt 4: {1 if attempt == 4 else 0}\n")
-    print(f"Attempt 5: {1 if attempt == 5 else 0}\n")
-    print(f"Attempt 6: {1 if attempt == 6 else 0}\n")
-
-    logger.info("******* Statistics *********")
-    logger.info(f"Played: {game_count}")
-    logger.info(f"Won%: {(won_count/game_count*100)}")
-    logger.info("******* Guess Distribution *********")
-    logger.info(f"Attempt 1: {1 if attempt == 1 else 0}")
-    logger.info(f"Attempt 2: {1 if attempt == 2 else 0}")
-    logger.info(f"Attempt 3: {1 if attempt == 3 else 0}")
-    logger.info(f"Attempt 4: {1 if attempt == 4 else 0}")
-    logger.info(f"Attempt 5: {1 if attempt == 5 else 0}")
-    logger.info(f"Attempt 6: {1 if attempt == 6 else 0}")
-
-    return game_count, won_count
-
-
-def main():
-    game_count = 0
-    won_count = 0
-    logger = log()
-    word_list = dict.get_all_5_letter_words()
-    word = random.choice(word_list)
-    word_list.remove(word)
-    dict.get_letter_dictionary()
-    dict.get_words_probability()
-    game_count, won_count = start_game(word, game_count, won_count, logger)
-    # Game continues till empty string entered
-    ans = input()
-    while ans != "":
-
-        if len(word_list) == 0:
-            word_list = dict.get_all_5_letter_words()
-
-        word = random.choice(word_list)
-        word_list.remove(word)
-        game_count, won_count = start_game(word, game_count, won_count, logger)
-        ans = input()
-    else:
-        exit()
-
-
-def log():
-    logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
-    formatter = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s')
-
-    file_handler = logging.FileHandler('gameplay.log')
-    file_handler.setLevel(logging.DEBUG)
-    file_handler.setFormatter(formatter)
-
-    logger.addHandler(file_handler)
-    return logger
-
-
-if __name__ == "__main__":
-    main()
+        if len(word) != 5 or word in self.inputList or not word.isalpha():
+            print("Input should be a unique 5 letter word")
+            return "incorrect input"
+        else:
+            self.inputList.append(word)
+            k = k+1
+            return word
