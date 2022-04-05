@@ -1,26 +1,20 @@
 class Node:
-    # constructor
-    def __init__(self, data=None, next=None):
-        self.data = data
-        self.next = next
+    def __init__(self, dataval=None):
+        self.dataval = dataval
+        self.nextval = None
+
+    def __str__(self) -> str:
+        return self.dataval
 
 
-class LinkedList:
+class SLinkedList:
     def __init__(self):
-        self.head = None
+        self.headval = None
 
-    def insert(self, data):
-        newNode = Node(data)
-        if(self.head):
-            current = self.head
-            while(current.next):
-                current = current.next
-            current.next = newNode
-        else:
-            self.head = newNode
-
-    def printLL(self):
-        current = self.head
-        while(current):
-            print(current.data)
-            current = current.next
+    def listprint(self):
+        printval = self.headval
+        print("Printing Linked List : ")
+        while printval is not None:
+            print(f"{printval.dataval} ->", end=" ")
+            printval = printval.nextval
+        print("NULL(End of list)")

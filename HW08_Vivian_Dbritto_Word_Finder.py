@@ -1,96 +1,78 @@
-from HW08_Vivian_Dbritto_Linked_List import LinkedList
+class Helper:
 
+    def help(good_letters, bad_letters, new_answer, entered_words):
 
-def split(word):
-    return list(word)
+        goodWords = good_letters.upper()
 
+        if len(goodWords) > 5:
+            raise Exception("You can only have 5 good letters")
 
-def getWordRank(word):
-    print(word)
-    file1 = open('wordRank.csv', 'r')
-    lines = file1.readlines()
-    for line in lines:
-        list = line.split(",")
-        if(list[1] == word):
-            return list[0]
-    return
+        goodWords = list(goodWords.strip())
 
+        badWords = bad_letters.upper()
 
-def getPossibleWords():
-    goodLetter = input(
-        "Enter the good letters without space : ")
-    badLetter = input(
-        "Enter the bad letters without space : ")
+        badWords = list(badWords.strip())
 
-    if(goodLetter or badLetter):
-        letter1 = input("Enter the letter at position 1 : ")
-        letter2 = input("Enter the letter at position 2 : ")
-        letter3 = input("Enter the letter at position 3 : ")
-        letter4 = input("Enter the letter at position 4 : ")
-        letter5 = input("Enter the letter at position 5 : ")
+        if any(x in goodWords for x in badWords):
+            raise Exception('Letter cannot be both good and bad!\n')
 
-        goodLetter_list = split(goodLetter)
-        badLetter_list = split(badLetter)
-        print(goodLetter_list)
+        positionWords = new_answer.upper()
+        if len(positionWords) != 0:
+            if len(positionWords) != 5:
+                raise Exception(
+                    'Word should be of length 5 or empty\n')
 
-        valid_words_file = open('wordList.txt', 'r')
-        words = valid_words_file.readlines()
-        l1 = LinkedList()
-        l2 = LinkedList()
-        word_dict = {}
-        for word in words:
-            word = word.strip()
-            has_all_goodLetters = all(
-                [char in word for char in goodLetter_list])
-            has_no_badLetters = any([char in word for char in badLetter_list])
+        if not all(x.isalpha() or x.isspace() for x in positionWords):
+            raise Exception(
+                'Please enter a word containing only Alphabets or Spaces.\n')
 
-            if has_all_goodLetters == True and has_no_badLetters == False:
-                l2.insert(word)
-                if(letter1):
-                    if(word[0] != letter1.strip()):
-                        continue
-                if(letter2):
-                    if(word[1] != letter2.strip()):
-                        continue
-                if(letter3):
-                    if(word[2] != letter3.strip()):
-                        continue
-                if(letter4):
-                    if(word[3] != letter4.strip()):
-                        continue
-                if(letter5):
-                    if(word[4] != letter5.strip()):
-                        continue
-                l1.insert(word)
+        try:
+            fs = open("wordRank.csv", "r")
+            next(fs)
 
-        if l1.head:
-            current = l1.head
-        else:
-            current = l2.head
+            wordlist = []
+            tentative = []
 
-        while(current):
-            word_dict[current.data] = int(getWordRank(current.data.strip()))
-            current = current.next
-        sorted_list = dict(
-            sorted(word_dict.items(), key=lambda x: x[1], reverse=True))
-        return sorted_list.keys()
-    else:
-        file1 = open('wordRank.csv', 'r')
-        lines = file1.readlines()
-        result = []
-        for line in lines:
-            list = line.split(",")
-            result.append(list[1])
-        return result[0:50]
+            for x in fs:
+                wordlist.append(x[0:5])
 
+            # If user does not provide Good or bad words, then display top 50 words
+            if len(goodWords) == 0 and len(badWords) == 0:
+                return wordlist[0]
 
-def main():
-    x = getPossibleWords()
-    if(len(x) > 0):
-        print(*x, sep="\n")
-    else:
-        print('No combination found')
+            for x in wordlist:
+                # good = all(letter in x for letter in goodWords)
+                goodflag = True
+                badFlag = True
+                for y in goodWords:
+                    if y not in x:
+                        goodflag = False
+                        break
+                for z in badWords:
+                    if z in x:
+                        badFlag = False
 
+                if goodflag and badFlag:
+                    tentative.append(x)
 
-if __name__ == '__main__':
-    main()
+            copyTentative = tentative[:]
+
+            if(len(positionWords) == 5):
+                for x in tentative:
+                    for index in range(5):
+                        if positionWords[index] != " " and positionWords[index] != x[index]:
+                            copyTentative.remove(x)
+                            break
+
+            fs.close()
+        except IOError:
+            print('An error occured trying to read the file.\n')
+            print(
+                'Please make sure "wordRank.csv" is present in the directory before running the program\n')
+            quit()
+
+        for word in entered_words:
+            if word in copyTentative:
+                copyTentative.remove(word)
+
+        return copyTentative[0]
